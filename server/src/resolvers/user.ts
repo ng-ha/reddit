@@ -1,5 +1,5 @@
 import argon2 from 'argon2';
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { COOKIE_NAME } from '../constants';
 import { User } from '../entities/User';
@@ -11,6 +11,12 @@ import { validateRegisterInput } from '../utils/validateRegisterInput';
 
 @Resolver()
 export class UserResolver {
+  @Query((_returns) => User, { nullable: true })
+  async me(@Ctx() { req }: Context): Promise<User | null> {
+    if (!req.session.userId) return null;
+    return await User.findOneBy({ id: req.session.userId });
+  }
+
   @Mutation((_returns) => UserMutationResponse)
   async register(
     @Arg('registerInput') { username, email, password }: RegisterInput,
@@ -38,10 +44,10 @@ export class UserResolver {
           ],
         };
 
+      //pass check, create new user
       const hashedPassword = await argon2.hash(password);
       let newUser = await User.create({ username, password: hashedPassword, email }).save();
 
-      console.log({ id: newUser.id });
       req.session.userId = newUser.id;
 
       return {
@@ -86,8 +92,6 @@ export class UserResolver {
           message: 'Wrong password',
           errors: [{ field: 'password', message: 'Wrong password' }],
         };
-
-      // session: userId = existingUser.id
 
       req.session.userId = existingUser.id;
 

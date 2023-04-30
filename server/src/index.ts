@@ -68,7 +68,7 @@ const main = async () => {
 
   app.use(
     '/',
-    cors(),
+    cors({ origin: 'http://localhost:3000', credentials: true }),
     bodyParser.json(),
     expressMiddleware(server, { context: async ({ req, res }: Context) => ({ req, res }) })
   );
