@@ -1,12 +1,17 @@
 import argon2 from 'argon2';
+import { nanoid } from 'nanoid';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { COOKIE_NAME } from '../constants';
 import { User } from '../entities/User';
+import { TokenModal } from '../models/Token';
+import { ChangePasswordInput } from '../types/ChangePasswordInput';
 import { Context } from '../types/Context';
+import { ForgotPasswordInput } from '../types/ForgotPassword';
 import { LoginInput } from '../types/LoginInput';
 import { RegisterInput } from '../types/RegisterInput';
 import { UserMutationResponse } from '../types/UserMutationResponse';
+import { sendEmail } from '../utils/sendEmail';
 import { validateRegisterInput } from '../utils/validateRegisterInput';
 
 @Resolver()
@@ -48,6 +53,7 @@ export class UserResolver {
       const hashedPassword = await argon2.hash(password);
       let newUser = await User.create({ username, password: hashedPassword, email }).save();
 
+      //create new session by mofify session (automatically saved to db, send header set-cookie to client)
       req.session.userId = newUser.id;
 
       return {
@@ -93,6 +99,7 @@ export class UserResolver {
           errors: [{ field: 'password', message: 'Wrong password' }],
         };
 
+      //create new session by mofify session (automatically saved to db, send header set-cookie to client)
       req.session.userId = existingUser.id;
 
       return {
@@ -124,5 +131,87 @@ export class UserResolver {
         resolve(true);
       });
     });
+  }
+
+  @Mutation((_returns) => Boolean)
+  async forgotPassword(
+    @Arg('forgotPasswordInput') { email }: ForgotPasswordInput
+  ): Promise<boolean> {
+    const user = await User.findOneBy({ email });
+
+    if (!user) return true;
+
+    // find and delete existing token (if exists)
+    await TokenModal.findOneAndDelete({ userId: `${user.id}` });
+
+    const resetToken = nanoid();
+    const hashedResetToken = await argon2.hash(resetToken);
+    await new TokenModal({ userId: `${user.id}`, token: hashedResetToken }).save();
+    await sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password?token=${resetToken}&userId=${user.id}">Click here to reset your password.</>`
+    );
+    return true;
+  }
+
+  @Mutation((_returns) => UserMutationResponse)
+  async changePassword(
+    @Arg('token') token: string,
+    @Arg('userId') userId: string,
+    @Arg('changePasswordInput') { newPassword }: ChangePasswordInput,
+    @Ctx() { req }: Context
+  ): Promise<UserMutationResponse> {
+    if (newPassword.length <= 2)
+      return {
+        code: 400,
+        success: false,
+        message: 'Invalid password',
+        errors: [{ field: 'newPassword', message: 'Length must be greater than 2' }],
+      };
+    try {
+      const resetPasswordTokenRecord = await TokenModal.findOne({ userId });
+      if (!resetPasswordTokenRecord)
+        return {
+          code: 400,
+          success: false,
+          message: 'Expired password reset token (Record not found)',
+          errors: [{ field: 'token', message: 'Expired password reset token (Record not found)' }],
+        };
+      const resetPasswordTokenValid = await argon2.verify(resetPasswordTokenRecord.token, token);
+      if (!resetPasswordTokenValid)
+        return {
+          code: 400,
+          success: false,
+          message: 'Invalid password reset token',
+          errors: [{ field: 'token', message: 'Invalid password reset token' }],
+        };
+      const user = await User.findOneBy({ id: parseInt(userId) });
+      if (!user)
+        return {
+          code: 400,
+          success: false,
+          message: 'user no longer exists',
+          errors: [{ field: 'token', message: 'User no longer exists' }],
+        };
+      const hashedNewPassword = await argon2.hash(newPassword);
+      await User.update({ id: parseInt(userId) }, { password: hashedNewPassword });
+      await resetPasswordTokenRecord.deleteOne();
+
+      //modified session to create session, save to db, send header set-cookie to client
+      req.session.userId = user.id;
+      return {
+        code: 200,
+        success: true,
+        message: 'User password reset successfully',
+        user,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        code: 500,
+        success: false,
+        message: `Internal server error ${error.message}`,
+      };
+    }
   }
 }

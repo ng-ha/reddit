@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Box, Button, Flex, FormControl, Spinner, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, Link, Spinner, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -10,6 +10,7 @@ import Wrapper from '../components/Wrapper';
 import { loginMutation } from '../graphql-client/mutations/login';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
+import NextLink from 'next/link';
 
 const Login = () => {
   const [loginUser, { error }] = useMutation(loginMutation);
@@ -83,25 +84,23 @@ const Login = () => {
       <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
         {({ isSubmitting }) => (
           <Form>
-            <FormControl>
-              <InputField
-                name="usernameOrEmail"
-                placeholder="Username or Email"
-                label="Username or Email"
-                type="text"
-              />
-              <Box mt={4}>
-                <InputField
-                  name="password"
-                  placeholder="Password"
-                  label="Password"
-                  type="password"
-                />
-              </Box>
-              <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
-                Login
-              </Button>
-            </FormControl>
+            <InputField
+              name="usernameOrEmail"
+              placeholder="Username or Email"
+              label="Username or Email"
+              type="text"
+            />
+            <Box mt={4}>
+              <InputField name="password" placeholder="Password" label="Password" type="password" />
+            </Box>
+            <Flex mt={2}>
+              <NextLink href="/forgot-password" legacyBehavior>
+                <Link ml="auto">Forgot password?</Link>
+              </NextLink>
+            </Flex>
+            <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
+              Login
+            </Button>
           </Form>
         )}
       </Formik>
