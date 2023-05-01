@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Box, Button, Flex, FormControl, Spinner } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, Spinner, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -12,10 +12,11 @@ import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
 
 const Register = () => {
-  const [registerUser, { data, error, loading: _loading }] = useMutation(registerMutation);
-
+  const [registerUser, { error, loading: _loading }] = useMutation(registerMutation);
   const { data: authData, loading: authLoading } = useCheckAuth();
   const router = useRouter();
+  const toast = useToast();
+
   const initialValues: RegisterInput = {
     username: '',
     email: '',
@@ -39,6 +40,13 @@ const Register = () => {
     if (response.data?.register.errors) {
       setErrors(mapFieldErrors(response.data?.register.errors));
     } else if (response.data?.register.user) {
+      toast({
+        title: `Welcome ${response.data.register.user.username}!`,
+        description: 'Registered successfully!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       router.push('/');
     }
     setSubmitting(false);
@@ -50,7 +58,6 @@ const Register = () => {
   ) : (
     <Wrapper>
       {error && <p>Failed to register. Internal server error.</p>}
-      {data && data.register.success && <p>Registered successsfully {JSON.stringify(data)}</p>}
       <Formik initialValues={initialValues} onSubmit={onRegisterSubmit}>
         {({ isSubmitting }) => (
           <Form>

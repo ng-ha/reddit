@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Box, Button, Flex, FormControl, Spinner } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, Spinner, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -12,9 +12,10 @@ import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
 
 const Login = () => {
-  const [loginUser, { data, error }] = useMutation(loginMutation);
+  const [loginUser, { error }] = useMutation(loginMutation);
   const router = useRouter();
   const { data: authData, loading: authLoading } = useCheckAuth();
+  const toast = useToast();
 
   const initialValues: LoginInput = {
     usernameOrEmail: '',
@@ -60,10 +61,18 @@ const Login = () => {
     if (response.data?.login.errors) {
       setErrors(mapFieldErrors(response.data?.login.errors));
     } else if (response.data?.login.user) {
+      toast({
+        title: `Welcome back ${response.data.login.user.username}!`,
+        description: 'Logged in successfully!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
       router.push('/');
     }
     setSubmitting(false);
   };
+
   return authLoading || (!authLoading && authData?.me) ? (
     <Flex justifyContent="center" alignItems="center" minH="100vh">
       <Spinner />
@@ -71,7 +80,6 @@ const Login = () => {
   ) : (
     <Wrapper>
       {error && <p>Failed to login. Internal server error.</p>}
-      {data && data.login.success && <p>Logged in successsfully {JSON.stringify(data)}</p>}
       <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
         {({ isSubmitting }) => (
           <Form>

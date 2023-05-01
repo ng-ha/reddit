@@ -30,13 +30,11 @@ const Navbar = () => {
   } else if (!data?.me) {
     body = (
       <>
-        <NextLink href="/login">
-          <Link mr={2} as="span">
-            Login
-          </Link>
+        <NextLink href="/login" legacyBehavior>
+          <Link mr={2}>Login</Link>
         </NextLink>
-        <NextLink href="/register">
-          <Link as="span">Register</Link>
+        <NextLink href="/register" legacyBehavior>
+          <Link>Register</Link>
         </NextLink>
       </>
     );
