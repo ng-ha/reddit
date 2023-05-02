@@ -32,11 +32,11 @@ const ForgotPassword = () => {
     );
   } else {
     return (
-      <Wrapper>
+      <Wrapper size="small">
         <Formik initialValues={initialValues} onSubmit={onForgotPasswordSubmit}>
           {({ isSubmitting }) =>
             !loading && data?.forgotPassword ? (
-              <Wrapper>
+              <Wrapper size="small">
                 <Alert status="success" variant="subtle">
                   <AlertIcon />
                   <AlertTitle>Please check your inbox!</AlertTitle>

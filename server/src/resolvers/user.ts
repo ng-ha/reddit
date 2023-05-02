@@ -29,11 +29,7 @@ export class UserResolver {
   ): Promise<UserMutationResponse> {
     const validateRegisterInputError = validateRegisterInput({ username, email, password });
     if (validateRegisterInputError !== null)
-      return {
-        code: 400,
-        success: false,
-        ...validateRegisterInputError,
-      };
+      return { code: 400, success: false, ...validateRegisterInputError };
     try {
       const existingUser = await User.findOne({ where: [{ username }, { email }] });
       if (existingUser)
@@ -64,11 +60,7 @@ export class UserResolver {
       };
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-        success: false,
-        message: `Internal server error ${error.message}`,
-      };
+      return { code: 500, success: false, message: `Internal server error ${error.message}` };
     }
   }
 
@@ -102,19 +94,10 @@ export class UserResolver {
       //create new session by mofify session (automatically saved to db, send header set-cookie to client)
       req.session.userId = existingUser.id;
 
-      return {
-        code: 200,
-        success: true,
-        message: 'Logged in successfully',
-        user: existingUser,
-      };
+      return { code: 200, success: true, message: 'Logged in successfully', user: existingUser };
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-        success: false,
-        message: `Internal server error ${error.message}`,
-      };
+      return { code: 500, success: false, message: `Internal server error ${error.message}` };
     }
   }
 
@@ -199,19 +182,10 @@ export class UserResolver {
 
       //modified session to create session, save to db, send header set-cookie to client
       req.session.userId = user.id;
-      return {
-        code: 200,
-        success: true,
-        message: 'User password reset successfully',
-        user,
-      };
+      return { code: 200, success: true, message: 'User password reset successfully', user };
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-        success: false,
-        message: `Internal server error ${error.message}`,
-      };
+      return { code: 500, success: false, message: `Internal server error ${error.message}` };
     }
   }
 }

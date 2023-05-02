@@ -79,7 +79,7 @@ const ChangePassword = () => {
     );
   } else if (!router.query.userId || !router.query.token) {
     return (
-      <Wrapper>
+      <Wrapper size="small">
         <Alert status="error" variant="subtle">
           <AlertIcon />
           <AlertTitle>Invalid password change request!</AlertTitle>
@@ -93,7 +93,7 @@ const ChangePassword = () => {
     );
   } else {
     return (
-      <Wrapper>
+      <Wrapper size="small">
         <Formik initialValues={initialValues} onSubmit={onChangePasswordSubmit}>
           {({ isSubmitting }) => (
             <Form>
