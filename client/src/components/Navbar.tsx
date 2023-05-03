@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Button, Flex, Heading, Link } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Link, Spinner, useToast } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
 
@@ -10,9 +10,10 @@ import { meQuery } from '../graphql-client/queries/me';
 const Navbar = () => {
   const { loading: meQueryLoading, data } = useQuery(meQuery);
   const [logout, { loading: logoutMutationLoading }] = useMutation(logoutMutation);
+  const toast = useToast();
 
   const logoutUser = async () => {
-    await logout({
+    const response = await logout({
       update: (cache, { data }) => {
         if (data?.logout) {
           cache.writeQuery<MeQuery>({
@@ -22,11 +23,21 @@ const Navbar = () => {
         }
       },
     });
+
+    if (response.data?.logout) {
+      toast({
+        title: `Logged out successfully!`,
+        description: "Now you're restricted from using all the features.",
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   let body;
   if (meQueryLoading) {
-    body = null;
+    body = <Spinner mr={20} />;
   } else if (!data?.me) {
     body = (
       <>
@@ -40,9 +51,14 @@ const Navbar = () => {
     );
   } else {
     body = (
-      <Button onClick={logoutUser} isLoading={logoutMutationLoading}>
-        Logout
-      </Button>
+      <Flex>
+        <NextLink href="/create-post">
+          <Button mr={4}>Create Post</Button>
+        </NextLink>
+        <Button onClick={logoutUser} isLoading={logoutMutationLoading}>
+          Logout
+        </Button>
+      </Flex>
     );
   }
 

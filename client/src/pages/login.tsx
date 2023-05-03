@@ -16,6 +16,8 @@ const Login = () => {
   const [loginUser, { error }] = useMutation(loginMutation);
   const router = useRouter();
   const { data: authData, loading: authLoading } = useCheckAuth();
+  console.log('medata login', authData);
+  console.log('meLoaading login ', authLoading);
   const toast = useToast();
 
   const initialValues: LoginInput = {
@@ -64,7 +66,7 @@ const Login = () => {
     } else if (response.data?.login.user) {
       toast({
         title: `Welcome back ${response.data.login.user.username}!`,
-        description: 'Logged in successfully!',
+        description: 'Logged in successfully.',
         status: 'success',
         duration: 3000,
         isClosable: true,

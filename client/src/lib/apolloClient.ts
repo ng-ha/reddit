@@ -12,6 +12,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 interface IApolloStateProps {
   [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
+  fallback?: boolean | 'blocking';
 }
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {

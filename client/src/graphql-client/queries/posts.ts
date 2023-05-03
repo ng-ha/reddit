@@ -7,15 +7,7 @@ export const postsQuery = gql(`#graphql
     cursor
     hasMore
     paginatedPosts {
-      id
-      title
-      text
-      textSnippet
-      user {
-        username
-      }
-      createdAt
-      updatedAt
+      ...postWithUserInfo
     }
   }
 }

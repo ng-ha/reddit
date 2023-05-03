@@ -24,4 +24,16 @@ export const FRAGMENTS = gql(`#graphql
       ...fieldError
     }
   }
+  fragment postWithUserInfo on Post {
+    id
+    title
+    text
+    textSnippet
+    user {
+      id
+      username
+    }
+    createdAt
+    updatedAt
+  }
 `);

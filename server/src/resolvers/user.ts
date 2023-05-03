@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 
 import { COOKIE_NAME } from '../constants';
 import { User } from '../entities/User';
@@ -14,8 +14,13 @@ import { UserMutationResponse } from '../types/UserMutationResponse';
 import { sendEmail } from '../utils/sendEmail';
 import { validateRegisterInput } from '../utils/validateRegisterInput';
 
-@Resolver()
+@Resolver((_of) => User)
 export class UserResolver {
+  @FieldResolver((_returns) => String)
+  email(@Root() root: User, @Ctx() { req }: Context): String {
+    return req.session.userId === root.id ? root.email : '';
+  }
+
   @Query((_returns) => User, { nullable: true })
   async me(@Ctx() { req }: Context): Promise<User | null> {
     if (!req.session.userId) return null;
