@@ -56,6 +56,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   register: UserMutationResponse;
   updatePost: PostMutationResponse;
+  vote: PostMutationResponse;
 };
 
 
@@ -95,6 +96,12 @@ export type MutationUpdatePostArgs = {
   updatePostInput: UpdatePostInput;
 };
 
+
+export type MutationVoteArgs = {
+  inputVoteValue: VoteType;
+  postId: Scalars['Int'];
+};
+
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
   cursor: Scalars['DateTime'];
@@ -107,6 +114,7 @@ export type Post = {
   __typename?: 'Post';
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  points: Scalars['Float'];
   text: Scalars['String'];
   textSnippet: Scalars['String'];
   title: Scalars['String'];
@@ -172,6 +180,11 @@ export type UserMutationResponse = IMutationResponse & {
   success: Scalars['Boolean'];
   user?: Maybe<User>;
 };
+
+export enum VoteType {
+  Downvote = 'Downvote',
+  Upvote = 'Upvote'
+}
 
 export type FieldErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 

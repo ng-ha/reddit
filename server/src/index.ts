@@ -15,11 +15,11 @@ import { DataSource } from 'typeorm';
 
 import { COOKIE_NAME, __prod__ } from './constants';
 import { Post } from './entities/Post';
+import { Upvote } from './entities/Upvote';
 import { User } from './entities/User';
 import { HelloResolver } from './resolvers/hello';
 import { PostResolver } from './resolvers/post';
 import { UserResolver } from './resolvers/user';
-import { Context } from './types/Context';
 
 const main = async () => {
   const AppDataSource = new DataSource({
@@ -29,7 +29,7 @@ const main = async () => {
     password: process.env.DB_PASSWORD_DEV,
     logging: true,
     synchronize: true,
-    entities: [User, Post],
+    entities: [User, Post, Upvote],
   });
   await AppDataSource.initialize();
 
@@ -70,7 +70,7 @@ const main = async () => {
     '/',
     cors({ origin: 'http://localhost:3000', credentials: true }),
     bodyParser.json(),
-    expressMiddleware(server, { context: async ({ req, res }: Context) => ({ req, res }) })
+    expressMiddleware(server, { context: async ({ req, res }) => ({ req, res, AppDataSource }) })
   );
 
   const PORT = process.env.PORT || 4000;

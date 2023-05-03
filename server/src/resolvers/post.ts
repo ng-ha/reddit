@@ -9,9 +9,10 @@ import {
   Resolver,
   Root,
   UseMiddleware,
+  registerEnumType,
 } from 'type-graphql';
-
 import { LessThan } from 'typeorm';
+
 import { Post } from '../entities/Post';
 import { User } from '../entities/User';
 import { checkAuth } from '../middlewares/checkAuth';
@@ -20,6 +21,11 @@ import { CreatePostInput } from '../types/CreatePostInput';
 import { PaginatedPosts } from '../types/PaginatedPosts';
 import { PostMutationResponse } from '../types/PostMutationResponse';
 import { UpdatePostInput } from '../types/UpdatePostInput';
+import { VoteType } from '../types/VoteType';
+import { GraphQLError } from 'graphql';
+import { Upvote } from '../entities/Upvote';
+
+registerEnumType(VoteType, { name: 'VoteType' });
 
 @Resolver((_of) => Post)
 export class PostResolver {
@@ -126,5 +132,50 @@ export class PostResolver {
     await post.remove();
 
     return { code: 200, success: true, message: 'Post deleted successfully' };
+  }
+
+  @Mutation((_returns) => PostMutationResponse)
+  @UseMiddleware(checkAuth)
+  async vote(
+    @Arg('postId', (_type) => Int) postId: number,
+    @Arg('inputVoteValue', (_type) => VoteType) inputVoteValue: VoteType,
+    @Ctx() { req, AppDataSource }: Context
+  ): Promise<PostMutationResponse> {
+    return await AppDataSource.transaction(async (transactionalEntityManager) => {
+      //check if post exists
+      let post = await transactionalEntityManager.findOneBy(Post, { id: postId });
+      if (!post) {
+        throw new GraphQLError('Post not found', { extensions: { code: 'BAD_USER_INPUT' } });
+      }
+      //check if user has voted or not
+      const existingVote = await transactionalEntityManager.findOneBy(Upvote, {
+        postId,
+        userId: req.session.userId,
+      });
+
+      if (existingVote && existingVote.value !== inputVoteValue) {
+        await transactionalEntityManager.save(Upvote, {
+          ...existingVote,
+          value: inputVoteValue,
+        });
+        post = await transactionalEntityManager.save(Post, {
+          ...post,
+          points: post.points + 2 * inputVoteValue,
+        });
+      }
+
+      if (!existingVote) {
+        const newVote = transactionalEntityManager.create(Upvote, {
+          value: inputVoteValue,
+          userId: req.session.userId,
+          postId,
+        });
+        await transactionalEntityManager.save(newVote);
+        post.points = post.points + inputVoteValue;
+        post = await transactionalEntityManager.save(post);
+      }
+
+      return { code: 200, success: true, message: 'Post voted successfully', post };
+    });
   }
 }
