@@ -14,8 +14,6 @@ export const limit = 3;
 
 const Index = () => {
   const { data: meData, loading: meLoading } = useQuery(meQuery);
-  console.log('medata ', meData);
-  console.log('meLoaading ', meLoading);
   const { data, loading, fetchMore, networkStatus } = useQuery(postsQuery, {
     variables: { limit },
     notifyOnNetworkStatusChange: true,
@@ -48,7 +46,9 @@ const Index = () => {
                   <Text mt={4}>{post.textSnippet}</Text>
                   <Box ml="auto">
                     {meLoading && <Spinner />}
-                    {meData?.me?.id === post.user.id && <PostEditDeleteButtons postId={post.id} />}
+                    {meData?.me?.id === post.user.id && (
+                      <PostEditDeleteButtons postId={post.id} postUserId={post.user.id} />
+                    )}
                   </Box>
                 </Flex>
               </Box>

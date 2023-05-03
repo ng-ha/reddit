@@ -13,6 +13,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import NextLink from 'next/link';
 import { limit } from '..';
 import {
   PostDocument,
@@ -21,9 +22,9 @@ import {
   PostQuery,
 } from '../../__generated__/graphql';
 import Layout from '../../components/Layout';
+import PostEditDeleteButtons from '../../components/PostEditDeleteButtons';
 import { postQuery } from '../../graphql-client/queries/post';
 import { addApolloState, initializeApollo } from '../../lib/apolloClient';
-import NextLink from 'next/link';
 
 const Post = () => {
   const router = useRouter();
@@ -59,16 +60,16 @@ const Post = () => {
       <Heading mb={4}>{data.post.title}</Heading>
       <Box mb={4}>{data.post.text}</Box>
 
-      <Flex>
-        <Box ml="auto">
-          <NextLink href="/">
-            <Button>Back to Homepage</Button>
-          </NextLink>
-        </Box>
+      <Flex justifyContent="space-between" alignItems="center">
+        <PostEditDeleteButtons postId={data.post.id} postUserId={data.post.userId.toString()} />
+        <NextLink href="/">
+          <Button>Back to Homepage</Button>
+        </NextLink>
       </Flex>
     </Layout>
   );
 };
+
 export const getStaticPaths: GetStaticPaths = async () => {
   const apolloClient = initializeApollo();
 
@@ -88,6 +89,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: 'blocking',
   };
 };
+
 export const getStaticProps: GetStaticProps<{ [key: string]: any }, { id: string }> = async ({
   params,
 }) => {

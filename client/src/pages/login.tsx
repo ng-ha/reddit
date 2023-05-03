@@ -82,7 +82,7 @@ const Login = () => {
     </Flex>
   ) : (
     <Wrapper size="small">
-      {error && <p>Failed to login. Internal server error.</p>}
+      {error && <p>Failed to login. Internal server error: {error.message}</p>}
       <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
         {({ isSubmitting }) => (
           <Form>

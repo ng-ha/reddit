@@ -8,7 +8,7 @@ import { logoutMutation } from '../graphql-client/mutations/logout';
 import { meQuery } from '../graphql-client/queries/me';
 
 const Navbar = () => {
-  const { loading: meQueryLoading, data } = useQuery(meQuery);
+  const { loading: meQueryLoading, data, error } = useQuery(meQuery);
   const [logout, { loading: logoutMutationLoading }] = useMutation(logoutMutation);
   const toast = useToast();
 
@@ -38,6 +38,8 @@ const Navbar = () => {
   let body;
   if (meQueryLoading) {
     body = <Spinner mr={20} />;
+  } else if (error) {
+    body = error.message;
   } else if (!data?.me) {
     body = (
       <>

@@ -10,13 +10,13 @@ export const FRAGMENTS = gql(`#graphql
     username
     email
   }
-  fragment mutationStatuses on UserMutationResponse {
+  fragment userMutationStatuses on UserMutationResponse {
     code
     success
     message
   }
   fragment userMutationResponse on UserMutationResponse {
-    ...mutationStatuses
+    ...userMutationStatuses
     user {
       ...userInfo
     }
@@ -35,5 +35,19 @@ export const FRAGMENTS = gql(`#graphql
     }
     createdAt
     updatedAt
+  }
+  fragment postMutationStatuses on PostMutationResponse {
+    code
+    success
+    message
+  }
+  fragment postMutationResponse on PostMutationResponse {
+    ...postMutationStatuses
+    post {
+      ...postWithUserInfo
+    }
+    errors {
+      ...fieldError
+    }
   }
 `);
