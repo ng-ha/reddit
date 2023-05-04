@@ -11,27 +11,15 @@ import http from 'http';
 import mongoose from 'mongoose';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
-import { DataSource } from 'typeorm';
 
 import { COOKIE_NAME, __prod__ } from './constants';
-import { Post } from './entities/Post';
-import { Upvote } from './entities/Upvote';
-import { User } from './entities/User';
+import { AppDataSource } from './ormconfig';
 import { HelloResolver } from './resolvers/hello';
 import { PostResolver } from './resolvers/post';
 import { UserResolver } from './resolvers/user';
 import { buildDataLoaders } from './utils/dataLoaders';
 
 const main = async () => {
-  const AppDataSource = new DataSource({
-    type: 'postgres',
-    database: 'reddit',
-    username: process.env.DB_USENAME_DEV,
-    password: process.env.DB_PASSWORD_DEV,
-    logging: true,
-    synchronize: true,
-    entities: [User, Post, Upvote],
-  });
   await AppDataSource.initialize();
 
   const mongoUrl = `mongodb+srv://${process.env.SESSION_DB_USERNAME_DEV_PROD}:${process.env.SESSION_DB_PASSWORD_DEV_PROD}@reddit.ensnrm2.mongodb.net/Reddit?retryWrites=true&w=majority`;
