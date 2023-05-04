@@ -20,6 +20,7 @@ import { User } from './entities/User';
 import { HelloResolver } from './resolvers/hello';
 import { PostResolver } from './resolvers/post';
 import { UserResolver } from './resolvers/user';
+import { buildDataLoaders } from './utils/dataLoaders';
 
 const main = async () => {
   const AppDataSource = new DataSource({
@@ -70,7 +71,14 @@ const main = async () => {
     '/',
     cors({ origin: 'http://localhost:3000', credentials: true }),
     bodyParser.json(),
-    expressMiddleware(server, { context: async ({ req, res }) => ({ req, res, AppDataSource }) })
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({
+        req,
+        res,
+        AppDataSource,
+        dataLoaders: buildDataLoaders(),
+      }),
+    })
   );
 
   const PORT = process.env.PORT || 4000;

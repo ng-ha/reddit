@@ -35,14 +35,25 @@ export class PostResolver {
   }
 
   @FieldResolver((_returns) => User)
-  async user(@Root() root: Post): Promise<User | null> {
-    return await User.findOneBy({ id: root.userId });
+  async user(
+    @Root() root: Post,
+    @Ctx() { dataLoaders: { userLoader } }: Context
+  ): Promise<User | undefined> {
+    // return await User.findOneBy({ id: root.userId }); // not performant
+    return await userLoader.load(root.userId);
   }
 
   @FieldResolver((_returns) => Int)
-  async voteType(@Root() root: Post, @Ctx() { req }: Context): Promise<number> {
+  async voteType(
+    @Root() root: Post,
+    @Ctx() { req, dataLoaders: { voteTypeLoaders } }: Context
+  ): Promise<number> {
     if (!req.session.userId) return 0;
-    const existingVote = await Upvote.findOneBy({ postId: root.id, userId: req.session.userId });
+    // const existingVote = await Upvote.findOneBy({ postId: root.id, userId: req.session.userId }); // not performant
+    const existingVote = await voteTypeLoaders.load({
+      postId: root.id,
+      userId: req.session.userId,
+    });
     return existingVote ? existingVote.value : 0;
   }
 
