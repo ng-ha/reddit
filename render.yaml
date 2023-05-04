@@ -4,11 +4,12 @@ databases:
     user: mysite
 
 services:
-  - type: pserv
-    name: pgbouncer
+  - type: web
+    name: reddit
     env: docker
-    plan: standard
-    repo: https://github.com/render-oss/docker-pgbouncer
+    plan: free
+    rootDir: server
+    region: singapore
     envVars:
       - key: DATABASE_URL
         fromDatabase:
