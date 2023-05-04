@@ -21,6 +21,7 @@ import { buildDataLoaders } from './utils/dataLoaders';
 
 const main = async () => {
   await AppDataSource.initialize();
+  if (__prod__) await AppDataSource.runMigrations();
 
   const mongoUrl = `mongodb+srv://${process.env.SESSION_DB_USERNAME_DEV_PROD}:${process.env.SESSION_DB_PASSWORD_DEV_PROD}@reddit.ensnrm2.mongodb.net/Reddit?retryWrites=true&w=majority`;
   await mongoose.connect(mongoUrl);
@@ -40,6 +41,7 @@ const main = async () => {
         httpOnly: true, // JS Front-end cannot access the cookie
         secure: __prod__, // cookie only works in https
         sameSite: 'lax', // protection against CSRF
+        domain: __prod__ ? '.vercel.app' : undefined,
       },
       store: MongoStore.create({
         mongoUrl,
@@ -57,7 +59,10 @@ const main = async () => {
 
   app.use(
     '/',
-    cors({ origin: 'http://localhost:3000', credentials: true }),
+    cors({
+      origin: __prod__ ? process.env.CORS_ORIGIN_PROD : process.env.CORS_ORIGIN_DEV,
+      credentials: true,
+    }),
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => ({
