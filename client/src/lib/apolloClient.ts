@@ -5,6 +5,7 @@ import { onError } from '@apollo/client/link/error';
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
 import { Post } from '../__generated__/graphql';
+import Router from 'next/router';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
@@ -15,11 +16,16 @@ interface IApolloStateProps {
   fallback?: boolean | 'blocking';
 }
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors)
+const errorLink = onError(({ graphQLErrors, networkError, response }) => {
+  if (graphQLErrors && graphQLErrors[0].extensions.code === 'FORBIDDEN' && response) {
+    response.errors = undefined; // supress Unhandled Runtime Error
+    Router.push('/login');
+  }
+  if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path }) =>
       console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
     );
+  }
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
@@ -89,7 +95,7 @@ export function initializeApollo(initialState: NormalizedCacheObject | null = nu
     // Restore the cache with the merged data
     _apolloClient.cache.restore(data);
   }
-  // For SSG and SSR always create a new Apollo Client
+  // For SSG and SSR always create a new Apollo Client (don't send cached sensitive data from previous Query)
   if (typeof window === 'undefined') return _apolloClient;
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;

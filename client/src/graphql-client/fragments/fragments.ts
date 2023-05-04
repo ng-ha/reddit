@@ -29,6 +29,8 @@ export const FRAGMENTS = gql(`#graphql
     title
     text
     textSnippet
+    points
+    voteType
     user {
       id
       username

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { Reference, gql, useMutation, useQuery } from '@apollo/client';
 import { Box, Button, Flex, Heading, Link, Spinner, useToast } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
@@ -19,6 +19,24 @@ const Navbar = () => {
           cache.writeQuery<MeQuery>({
             query: MeDocument,
             data: { me: null },
+          });
+          cache.modify({
+            fields: {
+              posts: (existing) => {
+                existing.paginatedPosts.forEach((post: Reference) => {
+                  cache.writeFragment({
+                    id: post.__ref, // "Post:17"
+                    fragment: gql`
+                      fragment VoteType on Post {
+                        voteType
+                      }
+                    `,
+                    data: { voteType: 0 },
+                  });
+                });
+                return existing;
+              },
+            },
           });
         }
       },

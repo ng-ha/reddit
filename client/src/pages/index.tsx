@@ -1,14 +1,15 @@
 import { NetworkStatus, useQuery } from '@apollo/client';
 import { Box, Button, Flex, Heading, Link, Spinner, Stack, Text } from '@chakra-ui/react';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import NextLink from 'next/link';
 
 import { PostsDocument, PostsQuery } from '../__generated__/graphql';
 import Layout from '../components/Layout';
 import PostEditDeleteButtons from '../components/PostEditDeleteButtons';
+import UpvoteSection from '../components/UpvoteSection';
+import { meQuery } from '../graphql-client/queries/me';
 import { postsQuery } from '../graphql-client/queries/posts';
 import { addApolloState, initializeApollo } from '../lib/apolloClient';
-import { GetStaticProps } from 'next';
-import { meQuery } from '../graphql-client/queries/me';
 
 export const limit = 3;
 
@@ -33,6 +34,7 @@ const Index = () => {
         <Stack spacing={8}>
           {data?.posts?.paginatedPosts.map((post) => (
             <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
+              <UpvoteSection post={post} />
               <Box flex={1}>
                 <NextLink href={`/post/${post.id}`} legacyBehavior>
                   <Link>
@@ -69,12 +71,16 @@ const Index = () => {
 
 export default Index;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const Cookie = context.req.headers.cookie;
   const apolloClient = initializeApollo();
 
   await apolloClient.query<PostsQuery>({
     query: PostsDocument, // same as postsQuery
     variables: { limit },
+    context: { headers: { Cookie } },
   });
 
   return addApolloState(apolloClient, {

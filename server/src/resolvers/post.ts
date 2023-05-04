@@ -30,13 +30,20 @@ registerEnumType(VoteType, { name: 'VoteType' });
 @Resolver((_of) => Post)
 export class PostResolver {
   @FieldResolver((_returns) => String)
-  textSnippet(@Root() root: Post) {
+  textSnippet(@Root() root: Post): string {
     return root.text.slice(0, 50);
   }
 
   @FieldResolver((_returns) => User)
-  async user(@Root() root: Post) {
+  async user(@Root() root: Post): Promise<User | null> {
     return await User.findOneBy({ id: root.userId });
+  }
+
+  @FieldResolver((_returns) => Int)
+  async voteType(@Root() root: Post, @Ctx() { req }: Context): Promise<number> {
+    if (!req.session.userId) return 0;
+    const existingVote = await Upvote.findOneBy({ postId: root.id, userId: req.session.userId });
+    return existingVote ? existingVote.value : 0;
   }
 
   @Mutation((_returns) => PostMutationResponse)

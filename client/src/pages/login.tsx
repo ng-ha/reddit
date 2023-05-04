@@ -11,6 +11,7 @@ import { loginMutation } from '../graphql-client/mutations/login';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
 import NextLink from 'next/link';
+import { initializeApollo } from '../lib/apolloClient';
 
 const Login = () => {
   const [loginUser, { error }] = useMutation(loginMutation);
@@ -71,6 +72,11 @@ const Login = () => {
         duration: 3000,
         isClosable: true,
       });
+
+      //reset store to reload user-based voteType
+      const apolloClient = initializeApollo();
+      apolloClient.resetStore();
+
       router.push('/');
     }
     setSubmitting(false);
