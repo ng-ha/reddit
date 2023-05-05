@@ -1,5 +1,5 @@
 import { Reference, gql, useMutation, useQuery } from '@apollo/client';
-import { Box, Button, Flex, Heading, Spinner, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
 
@@ -56,7 +56,7 @@ const Navbar = () => {
 
   let body;
   if (meQueryLoading) {
-    body = <Spinner mr={20} />;
+    body = <Spinner mr={20} color="white" />;
   } else if (error) {
     body = error.message;
   } else if (!data?.me) {
@@ -72,7 +72,10 @@ const Navbar = () => {
     );
   } else {
     body = (
-      <Flex>
+      <Flex alignItems="center">
+        <Text mr={4} color="white" fontWeight="bold" fontSize={15} fontStyle="italic">
+          Greeting, {data.me.username}!
+        </Text>
         <NextLink href="/create-post">
           <Button mr={4}>Create Post</Button>
         </NextLink>

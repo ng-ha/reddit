@@ -10,6 +10,7 @@ import InputField from '../components/InputField';
 import Layout from '../components/Layout';
 import { createPostMutation } from '../graphql-client/mutations/createPost';
 import { useCheckAuth } from '../utils/useCheckAuth';
+import { initializeApollo } from '../lib/apolloClient';
 
 const CreatePost = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -64,6 +65,8 @@ const CreatePost = () => {
         duration: 3000,
         isClosable: true,
       });
+      const apolloClient = initializeApollo();
+      apolloClient.resetStore();
     }
 
     setSubmitting(false);
