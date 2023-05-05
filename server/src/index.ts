@@ -30,6 +30,7 @@ const main = async () => {
   const app = express();
   const httpServer = http.createServer(app);
 
+  app.set('trust proxy', 1);
   app.use(
     session({
       name: COOKIE_NAME,
@@ -40,7 +41,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60, // one hour
         httpOnly: true, // JS Front-end cannot access the cookie
         secure: __prod__, // cookie only works in https
-        sameSite: 'lax', // protection against CSRF
+        sameSite: 'none', // protection against CSRF
         domain: __prod__ ? '.vercel.app' : undefined,
       },
       store: MongoStore.create({
