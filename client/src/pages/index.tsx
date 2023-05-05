@@ -7,14 +7,12 @@ import { PostsDocument, PostsQuery } from '../__generated__/graphql';
 import Layout from '../components/Layout';
 import PostEditDeleteButtons from '../components/PostEditDeleteButtons';
 import UpvoteSection from '../components/UpvoteSection';
-import { meQuery } from '../graphql-client/queries/me';
 import { postsQuery } from '../graphql-client/queries/posts';
 import { addApolloState, initializeApollo } from '../lib/apolloClient';
 
 export const limit = 3;
 
 const Index = () => {
-  const { data: meData, loading: meLoading } = useQuery(meQuery);
   const { data, loading, fetchMore, networkStatus } = useQuery(postsQuery, {
     variables: { limit },
     notifyOnNetworkStatusChange: true,
