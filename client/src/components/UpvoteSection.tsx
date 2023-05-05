@@ -1,11 +1,10 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Flex, IconButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
 import { PostWithUserInfoFragment, VoteType } from '../__generated__/graphql';
 import { voteMutation } from '../graphql-client/mutations/vote';
-import { meQuery } from '../graphql-client/queries/me';
 
 interface Props {
   post: PostWithUserInfoFragment;
@@ -16,7 +15,6 @@ enum VoteTypeValue {
   Downvote = -1,
 }
 const UpvoteSection = ({ post }: Props) => {
-  const { data: meData } = useQuery(meQuery);
   const [vote, { loading }] = useMutation(voteMutation);
   const [loadingState, setLoadingState] = useState<
     'upvote-loading' | 'downvote-loading' | 'not-loading'

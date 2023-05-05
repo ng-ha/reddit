@@ -30,7 +30,10 @@ const errorLink = onError(({ graphQLErrors, networkError, response }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000', // Server URL (must be absolute)
+  uri:
+    process.env.NODE_ENV === 'production'
+      ? 'https://reddit-3m9u.onrender.com'
+      : 'http://localhost:4000', // Server URL (must be absolute)
   credentials: 'include', // Additional fetch() options like `credentials` or `headers`
 });
 
