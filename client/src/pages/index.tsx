@@ -34,23 +34,20 @@ const Index = () => {
         <Stack spacing={8}>
           {data?.posts?.paginatedPosts.map((post) => (
             <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
-              <UpvoteSection post={post} />
               <Box flex={1}>
                 <NextLink href={`/post/${post.id}`} legacyBehavior>
                   <Link>
-                    <Heading fontSize="xl">
-                      {post.title} -- {post.id}
-                    </Heading>
+                    <Heading fontSize="xl">{post.title}</Heading>
                   </Link>
                 </NextLink>
-                <Text>posted by {post.user.username}</Text>
-                <Flex align="center">
-                  <Text mt={4}>{post.textSnippet}</Text>
+                <Text fontStyle="italic" fontSize={13}>
+                  posted by {post.user.username}
+                </Text>
+                <Text mt={4}>{post.textSnippet}</Text>
+                <Flex align="center" mt={3}>
+                  <UpvoteSection post={post} />
                   <Box ml="auto">
-                    {meLoading && <Spinner />}
-                    {meData?.me?.id === post.user.id && (
-                      <PostEditDeleteButtons postId={post.id} postUserId={post.user.id} />
-                    )}
+                    <PostEditDeleteButtons postId={post.id} postUserId={post.user.id} />
                   </Box>
                 </Flex>
               </Box>

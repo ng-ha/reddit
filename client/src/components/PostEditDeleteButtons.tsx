@@ -63,7 +63,13 @@ const PostEditDeleteButtons = ({ postId, postUserId }: Props) => {
     if (router.route !== '/') router.push('/');
   };
   if (loading) return <Spinner />;
-  if (meData?.me?.id !== postUserId) return <Box />; // return empty div to keep ui consistent
+  if (meData?.me?.id !== postUserId)
+    return (
+      <Box>
+        <IconButton icon={<EditIcon />} aria-label="edit" mr={4} isDisabled />
+        <IconButton icon={<DeleteIcon />} aria-label="delete" colorScheme="red" mr={4} isDisabled />
+      </Box>
+    );
   return (
     <Box>
       <NextLink href={`/post/edit/${postId}`}>

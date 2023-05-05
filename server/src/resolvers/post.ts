@@ -31,7 +31,7 @@ registerEnumType(VoteType, { name: 'VoteType' });
 export class PostResolver {
   @FieldResolver((_returns) => String)
   textSnippet(@Root() root: Post): string {
-    return root.text.slice(0, 50);
+    return root.text.slice(0, 70) + '...';
   }
 
   @FieldResolver((_returns) => User)

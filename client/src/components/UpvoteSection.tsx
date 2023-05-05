@@ -1,10 +1,11 @@
 import { useMutation } from '@apollo/client';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
-import { Flex, IconButton } from '@chakra-ui/react';
+import { Box, Flex, IconButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
 import { PostWithUserInfoFragment, VoteType } from '../__generated__/graphql';
 import { voteMutation } from '../graphql-client/mutations/vote';
+import Like from './Like';
+import Dislike from './Dislike';
 
 interface Props {
   post: PostWithUserInfoFragment;
@@ -31,26 +32,33 @@ const UpvoteSection = ({ post }: Props) => {
     setLoadingState('not-loading');
   };
   return (
-    <Flex direction="column" alignItems="center" mr={4}>
+    <Flex direction="row" alignItems="center" mr={4}>
       <IconButton
-        icon={<ChevronUpIcon />}
+        size="xs"
+        mr={2}
+        bg="transparent"
+        _hover={{ bg: 'transparent' }}
+        icon={<Like colored={post.voteType === VoteTypeValue.Upvote} />}
         aria-label="upvote"
         onClick={post.voteType === VoteTypeValue.Upvote ? undefined : upvote.bind(this, post.id)}
         isLoading={loading && loadingState === 'upvote-loading'}
-        colorScheme={post.voteType === VoteTypeValue.Upvote ? 'green' : undefined}
-        // isDisabled={!meData?.me}
       />
-      {post.points}
       <IconButton
-        icon={<ChevronDownIcon />}
+        size="xs"
+        mr={2}
+        icon={<Dislike colored={post.voteType === VoteTypeValue.Downvote} />}
         aria-label="downvote"
         onClick={
           post.voteType === VoteTypeValue.Downvote ? undefined : downvote.bind(this, post.id)
         }
+        bg="transparent"
+        _hover={{ bg: 'transparent' }}
         isLoading={loading && loadingState === 'downvote-loading'}
-        colorScheme={post.voteType === VoteTypeValue.Downvote ? 'red' : undefined}
-        // isDisabled={!meData?.me}
       />
+
+      <Box fontSize={12} fontWeight="bold">
+        Votes: {post.points}
+      </Box>
     </Flex>
   );
 };
