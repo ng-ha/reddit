@@ -1,7 +1,9 @@
 databases:
-  - name: reddit
-    databaseName: reddit_i6kh
+  - name: Reddit
+    databaseName: reddit
     user: ngthanhha
+    region: singapore
+    pan: free
 
 services:
   - type: web
@@ -12,7 +14,9 @@ services:
     region: singapore
     envVars:
       - key: DATABASE_URL
-        value: postgres://ngthanhha:FtDCbGUaw8ivAs2ndyvRUPPtsbaQiT5w@dpg-ch9t3um4dad8g1jaod00-a.singapore-postgres.render.com/reddit_i6kh
+        fromDatabase:
+          name: Reddit
+          property: connectionString
       - key: CORS_ORIGIN_PROD
         sync: false
       - key: SESSION_DB_USERNAME_DEV_PROD
