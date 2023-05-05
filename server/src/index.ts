@@ -42,7 +42,7 @@ const main = async () => {
         httpOnly: true, // JS Front-end cannot access the cookie
         secure: __prod__, // cookie only works in https
         sameSite: 'none', // protection against CSRF
-        domain: '.vercel.app',
+        domain: __prod__ ? '.vercel.app' : undefined,
       },
       store: MongoStore.create({
         mongoUrl,
