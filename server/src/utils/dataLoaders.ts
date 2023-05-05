@@ -1,7 +1,7 @@
-import { In } from 'typeorm';
-import { User } from '../entities/User';
 import DataLoader from 'dataloader';
+import { In } from 'typeorm';
 import { Upvote } from '../entities/Upvote';
+import { User } from '../entities/User';
 
 //[1,2] => [{id:1}, {id:2}] in the same order as input
 const batchGetUsers = async (userIds: number[]) => {

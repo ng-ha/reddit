@@ -42,12 +42,14 @@ const main = async () => {
         httpOnly: true, // JS Front-end cannot access the cookie
         secure: __prod__, // cookie only works in https
         sameSite: 'none', // protection against CSRF
+        // domain: __prod__ ? '.vercel.app' : undefined // THIS MAKES ERROR domain='.onrender.com'
       },
       store: MongoStore.create({
         mongoUrl,
       }),
     })
   );
+
   const server = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver, PostResolver],

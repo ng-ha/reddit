@@ -12,8 +12,10 @@ import {
   registerEnumType,
 } from 'type-graphql';
 import { LessThan } from 'typeorm';
+import { GraphQLError } from 'graphql';
 
 import { Post } from '../entities/Post';
+import { Upvote } from '../entities/Upvote';
 import { User } from '../entities/User';
 import { checkAuth } from '../middlewares/checkAuth';
 import { Context } from '../types/Context';
@@ -22,8 +24,6 @@ import { PaginatedPosts } from '../types/PaginatedPosts';
 import { PostMutationResponse } from '../types/PostMutationResponse';
 import { UpdatePostInput } from '../types/UpdatePostInput';
 import { VoteType } from '../types/VoteType';
-import { GraphQLError } from 'graphql';
-import { Upvote } from '../entities/Upvote';
 
 registerEnumType(VoteType, { name: 'VoteType' });
 

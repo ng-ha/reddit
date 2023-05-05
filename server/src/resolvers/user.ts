@@ -11,7 +11,7 @@ import { ForgotPasswordInput } from '../types/ForgotPassword';
 import { LoginInput } from '../types/LoginInput';
 import { RegisterInput } from '../types/RegisterInput';
 import { UserMutationResponse } from '../types/UserMutationResponse';
-import { sendEmail } from '../utils/sendEmail';
+import { sendEmail, templateEmail } from '../utils/sendEmail';
 import { validateRegisterInput } from '../utils/validateRegisterInput';
 
 @Resolver((_of) => User)
@@ -135,10 +135,7 @@ export class UserResolver {
     const resetToken = nanoid();
     const hashedResetToken = await argon2.hash(resetToken);
     await new TokenModal({ userId: `${user.id}`, token: hashedResetToken }).save();
-    await sendEmail(
-      email,
-      `<a href="http://localhost:3000/change-password?token=${resetToken}&userId=${user.id}">Click here to reset your password.</>`
-    );
+    await sendEmail(email, templateEmail(resetToken, user.id));
     return true;
   }
 

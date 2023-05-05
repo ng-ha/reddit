@@ -1,5 +1,5 @@
-import { UserMutationResponse } from '../types/UserMutationResponse';
 import { RegisterInput } from '../types/RegisterInput';
+import { UserMutationResponse } from '../types/UserMutationResponse';
 
 export const validateRegisterInput = (
   registerInput: RegisterInput
