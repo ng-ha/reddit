@@ -1,15 +1,15 @@
+import { useMutation } from '@apollo/client';
 import { Alert, AlertIcon, AlertTitle, Button, Flex, Link, Spinner } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import React from 'react';
-import { useMutation } from '@apollo/client';
 import NextLink from 'next/link';
+import React from 'react';
 
 import { ForgotPasswordInput } from '../__generated__/graphql';
 import InputField from '../components/InputField';
+import Navbar from '../components/Navbar';
 import Wrapper from '../components/Wrapper';
 import { forgotPasswordMutation } from '../graphql-client/mutations/forgotPassword';
 import { useCheckAuth } from '../utils/useCheckAuth';
-import Navbar from '../components/Navbar';
 
 const ForgotPassword = () => {
   const [forgotPassword, { loading, data }] = useMutation(forgotPasswordMutation);

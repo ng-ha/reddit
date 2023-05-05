@@ -2,11 +2,12 @@ import { Reference, useMutation, useQuery } from '@apollo/client';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Box, IconButton, Spinner, useToast } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
+
+import { PaginatedPosts } from '../__generated__/graphql';
 import { deletePostMutation } from '../graphql-client/mutations/deletePost';
 import { meQuery } from '../graphql-client/queries/me';
-import { PaginatedPosts } from '../__generated__/graphql';
-import { useRouter } from 'next/router';
 
 interface Props {
   postId: string;

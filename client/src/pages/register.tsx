@@ -6,11 +6,11 @@ import React from 'react';
 
 import { MeDocument, MeQuery, RegisterInput } from '../__generated__/graphql';
 import InputField from '../components/InputField';
+import Navbar from '../components/Navbar';
 import Wrapper from '../components/Wrapper';
 import { registerMutation } from '../graphql-client/mutations/register';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
-import Navbar from '../components/Navbar';
 
 const Register = () => {
   const [registerUser, { error, loading: _loading }] = useMutation(registerMutation);

@@ -1,11 +1,10 @@
-import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, from } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-// import { concatPagination } from '@apollo/client/utilities';
+import { useMemo } from 'react';
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
-import { Post } from '../__generated__/graphql';
 import Router from 'next/router';
+import { Post } from '../__generated__/graphql';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
@@ -57,7 +56,6 @@ function createApolloClient() {
                   paginatedPosts = paginatedPosts.concat(incoming.paginatedPosts);
                 }
                 const result = { ...incoming, paginatedPosts };
-                console.log({ existing, incoming, result });
                 return result;
               },
             },

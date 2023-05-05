@@ -2,11 +2,11 @@ import { Reference, gql, useMutation, useQuery } from '@apollo/client';
 import { Box, Button, Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
+import { MoonIcon } from '@chakra-ui/icons';
 
 import { MeDocument, MeQuery } from '../__generated__/graphql';
 import { logoutMutation } from '../graphql-client/mutations/logout';
 import { meQuery } from '../graphql-client/queries/me';
-import { MoonIcon } from '@chakra-ui/icons';
 
 const Navbar = () => {
   const { loading: meQueryLoading, data, error } = useQuery(meQuery);

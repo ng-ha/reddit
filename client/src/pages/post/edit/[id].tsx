@@ -12,14 +12,14 @@ import {
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-
 import { Form, Formik, FormikHelpers } from 'formik';
+
+import { UpdatePostInput } from '../../../__generated__/graphql';
 import InputField from '../../../components/InputField';
 import Layout from '../../../components/Layout';
+import { updatePostMutation } from '../../../graphql-client/mutations/updatePost';
 import { meQuery } from '../../../graphql-client/queries/me';
 import { postQuery } from '../../../graphql-client/queries/post';
-import { updatePostMutation } from '../../../graphql-client/mutations/updatePost';
-import { UpdatePostInput } from '../../../__generated__/graphql';
 
 const PostEdit = () => {
   const router = useRouter();

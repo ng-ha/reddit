@@ -12,8 +12,8 @@ import {
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
-
 import NextLink from 'next/link';
+
 import { limit } from '..';
 import {
   PostDocument,

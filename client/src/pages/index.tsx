@@ -2,6 +2,7 @@ import { NetworkStatus, useQuery } from '@apollo/client';
 import { Box, Button, Flex, Heading, Link, Spinner, Stack, Text } from '@chakra-ui/react';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import NextLink from 'next/link';
+import { useEffect } from 'react';
 
 import { PostsDocument, PostsQuery } from '../__generated__/graphql';
 import Layout from '../components/Layout';
@@ -9,7 +10,6 @@ import PostEditDeleteButtons from '../components/PostEditDeleteButtons';
 import UpvoteSection from '../components/UpvoteSection';
 import { postsQuery } from '../graphql-client/queries/posts';
 import { addApolloState, initializeApollo } from '../lib/apolloClient';
-import { useEffect } from 'react';
 
 export const limit = 3;
 

@@ -3,23 +3,21 @@ import { Box, Button, Flex, Link, Spinner, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
+import NextLink from 'next/link';
 
 import { LoginInput, MeDocument, MeQuery } from '../__generated__/graphql';
 import InputField from '../components/InputField';
+import Navbar from '../components/Navbar';
 import Wrapper from '../components/Wrapper';
 import { loginMutation } from '../graphql-client/mutations/login';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
-import { useCheckAuth } from '../utils/useCheckAuth';
-import NextLink from 'next/link';
 import { initializeApollo } from '../lib/apolloClient';
-import Navbar from '../components/Navbar';
+import { useCheckAuth } from '../utils/useCheckAuth';
 
 const Login = () => {
   const [loginUser] = useMutation(loginMutation);
   const router = useRouter();
   const { data: authData, loading: authLoading } = useCheckAuth();
-  console.log('medata login', authData);
-  console.log('meLoaading login ', authLoading);
   const toast = useToast();
 
   const initialValues: LoginInput = {
@@ -91,7 +89,6 @@ const Login = () => {
     <>
       <Navbar />
       <Wrapper size="small">
-        {/* {error && <p>Failed to login. Internal server error: {error.message}</p>} */}
         <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
           {({ isSubmitting }) => (
             <Form>

@@ -9,8 +9,8 @@ import { CreatePostInput } from '../__generated__/graphql';
 import InputField from '../components/InputField';
 import Layout from '../components/Layout';
 import { createPostMutation } from '../graphql-client/mutations/createPost';
-import { useCheckAuth } from '../utils/useCheckAuth';
 import { initializeApollo } from '../lib/apolloClient';
+import { useCheckAuth } from '../utils/useCheckAuth';
 
 const CreatePost = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -36,10 +36,8 @@ const CreatePost = () => {
           //cache.modify overrides merge in field policy
           fields: {
             posts: (existing) => {
-              console.log({ existing });
               if (data?.createPost.success && data.createPost.post) {
                 const newPostRef = cache.identify(data.createPost.post); //Post:[new-id]
-                console.log({ newPostRef });
 
                 const newPostsAfterCreation = {
                   ...existing,
@@ -49,7 +47,6 @@ const CreatePost = () => {
                     ...existing.paginatedPosts, //[{__ref: "Post:20"}, {__ref: "Post:21"}, {__ref: "Post:22"}]
                   ],
                 };
-                console.log({ newPostsAfterCreation });
                 return newPostsAfterCreation;
               }
             },

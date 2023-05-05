@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 import { PostWithUserInfoFragment, VoteType } from '../__generated__/graphql';
 import { voteMutation } from '../graphql-client/mutations/vote';
-import Like from './Like';
 import Dislike from './Dislike';
+import Like from './Like';
 
 interface Props {
   post: PostWithUserInfoFragment;

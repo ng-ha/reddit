@@ -17,11 +17,11 @@ import React, { useState } from 'react';
 
 import { ChangePasswordInput, MeDocument, MeQuery } from '../__generated__/graphql';
 import InputField from '../components/InputField';
+import Navbar from '../components/Navbar';
 import Wrapper from '../components/Wrapper';
 import { changePasswordMutation } from '../graphql-client/mutations/changePassword';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
-import Navbar from '../components/Navbar';
 
 const ChangePassword = () => {
   const [changePassword] = useMutation(changePasswordMutation);
