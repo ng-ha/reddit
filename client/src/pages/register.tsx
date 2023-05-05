@@ -10,6 +10,7 @@ import Wrapper from '../components/Wrapper';
 import { registerMutation } from '../graphql-client/mutations/register';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
+import Navbar from '../components/Navbar';
 
 const Register = () => {
   const [registerUser, { error, loading: _loading }] = useMutation(registerMutation);
@@ -56,25 +57,33 @@ const Register = () => {
       <Spinner />
     </Flex>
   ) : (
-    <Wrapper size="small">
-      {error && <p>Failed to register. Internal server error.</p>}
-      <Formik initialValues={initialValues} onSubmit={onRegisterSubmit}>
-        {({ isSubmitting }) => (
-          <Form>
-            <InputField name="username" placeholder="Username" label="Username" type="text" />
-            <Box mt={4}>
-              <InputField name="email" placeholder="Email" label="Email" type="text" />
-            </Box>
-            <Box mt={4}>
-              <InputField name="password" placeholder="Password" label="Password" type="password" />
-            </Box>
-            <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
-              Register
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </Wrapper>
+    <>
+      <Navbar />
+      <Wrapper size="small">
+        {error && <p>Failed to register. Internal server error.</p>}
+        <Formik initialValues={initialValues} onSubmit={onRegisterSubmit}>
+          {({ isSubmitting }) => (
+            <Form>
+              <InputField name="username" placeholder="Username" label="Username" type="text" />
+              <Box mt={4}>
+                <InputField name="email" placeholder="Email" label="Email" type="text" />
+              </Box>
+              <Box mt={4}>
+                <InputField
+                  name="password"
+                  placeholder="Password"
+                  label="Password"
+                  type="password"
+                />
+              </Box>
+              <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
+                Register
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Wrapper>
+    </>
   );
 };
 

@@ -12,9 +12,10 @@ import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
 import NextLink from 'next/link';
 import { initializeApollo } from '../lib/apolloClient';
+import Navbar from '../components/Navbar';
 
 const Login = () => {
-  const [loginUser, { error }] = useMutation(loginMutation);
+  const [loginUser] = useMutation(loginMutation);
   const router = useRouter();
   const { data: authData, loading: authLoading } = useCheckAuth();
   console.log('medata login', authData);
@@ -87,32 +88,40 @@ const Login = () => {
       <Spinner />
     </Flex>
   ) : (
-    <Wrapper size="small">
-      {error && <p>Failed to login. Internal server error: {error.message}</p>}
-      <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
-        {({ isSubmitting }) => (
-          <Form>
-            <InputField
-              name="usernameOrEmail"
-              placeholder="Username or Email"
-              label="Username or Email"
-              type="text"
-            />
-            <Box mt={4}>
-              <InputField name="password" placeholder="Password" label="Password" type="password" />
-            </Box>
-            <Flex mt={2}>
-              <NextLink href="/forgot-password" legacyBehavior>
-                <Link ml="auto">Forgot password?</Link>
-              </NextLink>
-            </Flex>
-            <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
-              Login
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </Wrapper>
+    <>
+      <Navbar />
+      <Wrapper size="small">
+        {/* {error && <p>Failed to login. Internal server error: {error.message}</p>} */}
+        <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
+          {({ isSubmitting }) => (
+            <Form>
+              <InputField
+                name="usernameOrEmail"
+                placeholder="Username or Email"
+                label="Username or Email"
+                type="text"
+              />
+              <Box mt={4}>
+                <InputField
+                  name="password"
+                  placeholder="Password"
+                  label="Password"
+                  type="password"
+                />
+              </Box>
+              <Flex mt={2}>
+                <NextLink href="/forgot-password" legacyBehavior>
+                  <Link ml="auto">Forgot password?</Link>
+                </NextLink>
+              </Flex>
+              <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
+                Login
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Wrapper>
+    </>
   );
 };
 

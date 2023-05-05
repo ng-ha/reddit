@@ -41,7 +41,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60, // one hour
         httpOnly: true, // JS Front-end cannot access the cookie
         secure: __prod__, // cookie only works in https
-        sameSite: 'none', // protection against CSRF
+        sameSite: __prod__ ? 'none' : 'lax', // protection against CSRF
         // domain: __prod__ ? '.vercel.app' : undefined // THIS MAKES ERROR domain='.onrender.com'
       },
       store: MongoStore.create({

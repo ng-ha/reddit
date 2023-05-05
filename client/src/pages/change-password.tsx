@@ -21,6 +21,7 @@ import Wrapper from '../components/Wrapper';
 import { changePasswordMutation } from '../graphql-client/mutations/changePassword';
 import { mapFieldErrors } from '../helpers/mapFieldErrors';
 import { useCheckAuth } from '../utils/useCheckAuth';
+import Navbar from '../components/Navbar';
 
 const ChangePassword = () => {
   const [changePassword] = useMutation(changePasswordMutation);
@@ -93,33 +94,36 @@ const ChangePassword = () => {
     );
   } else {
     return (
-      <Wrapper size="small">
-        <Formik initialValues={initialValues} onSubmit={onChangePasswordSubmit}>
-          {({ isSubmitting }) => (
-            <Form>
-              <InputField
-                name="newPassword"
-                placeholder="New password"
-                label="New password"
-                type="password"
-              />
-              {tokenError && (
-                <Flex>
-                  <Box color="red" mr="2">
-                    {tokenError}
-                  </Box>
-                  <NextLink href="/forgot-password" legacyBehavior>
-                    <Link>Back</Link>
-                  </NextLink>
-                </Flex>
-              )}
-              <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
-                Change password
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </Wrapper>
+      <>
+        <Navbar />
+        <Wrapper size="small">
+          <Formik initialValues={initialValues} onSubmit={onChangePasswordSubmit}>
+            {({ isSubmitting }) => (
+              <Form>
+                <InputField
+                  name="newPassword"
+                  placeholder="New password"
+                  label="New password"
+                  type="password"
+                />
+                {tokenError && (
+                  <Flex>
+                    <Box color="red" mr="2">
+                      {tokenError}
+                    </Box>
+                    <NextLink href="/forgot-password" legacyBehavior>
+                      <Link>Back</Link>
+                    </NextLink>
+                  </Flex>
+                )}
+                <Button type="submit" colorScheme="teal" mt={4} isLoading={isSubmitting}>
+                  Change password
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Wrapper>
+      </>
     );
   }
 };
