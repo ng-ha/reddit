@@ -53,6 +53,7 @@ const main = async () => {
       resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
+    introspection: true,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
   await server.start();
