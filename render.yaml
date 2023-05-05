@@ -3,7 +3,7 @@ databases:
     databaseName: reddit
     user: ngthanhha
     region: singapore
-    pan: free
+    plan: free
 
 services:
   - type: web
