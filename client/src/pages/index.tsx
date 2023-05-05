@@ -9,18 +9,26 @@ import PostEditDeleteButtons from '../components/PostEditDeleteButtons';
 import UpvoteSection from '../components/UpvoteSection';
 import { postsQuery } from '../graphql-client/queries/posts';
 import { addApolloState, initializeApollo } from '../lib/apolloClient';
+import { useEffect } from 'react';
 
 export const limit = 3;
 
 const Index = () => {
-  const { data, loading, fetchMore, networkStatus } = useQuery(postsQuery, {
+  const { data, loading, fetchMore, networkStatus, refetch } = useQuery(postsQuery, {
     variables: { limit },
     notifyOnNetworkStatusChange: true,
+    nextFetchPolicy: 'network-only',
     //component rendered by useQuery will be re-rendered when networkStatus changed
     //query component re-renders while a refetch is in flight (make networkStatus and loading changed)
   });
   const loadingMorePosts = networkStatus === NetworkStatus.fetchMore;
   const loadMorePosts = () => fetchMore({ variables: { cursor: data?.posts?.cursor } });
+
+  useEffect(() => {
+    refetch({
+      limit,
+    });
+  }, []);
 
   return (
     <Layout>
@@ -53,12 +61,14 @@ const Index = () => {
           ))}
         </Stack>
       )}
-      {data?.posts?.hasMore && (
+      {data?.posts?.hasMore ? (
         <Flex>
           <Button m="auto" my="8" isLoading={loadingMorePosts} onClick={loadMorePosts}>
             {loadingMorePosts ? 'Loading...' : 'Show more'}
           </Button>
         </Flex>
+      ) : (
+        <Box mb={8} />
       )}
     </Layout>
   );
