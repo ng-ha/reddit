@@ -30,6 +30,7 @@ Backend:
 - Express-session
 - Node-mailer
 - **DataLoader** for optimized performance
+- Deploy with Docker to run in any enviroments
 
 Frontend:
 
