@@ -1,4 +1,4 @@
-# Reddit clone fullstack using GraphQL and NextJs 💥
+# Reddit clone fullstack using GraphQL, NextJs 💥
 
 ![reddit-clone](./github-images/reddit.png)
 
